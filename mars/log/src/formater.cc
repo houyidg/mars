@@ -35,16 +35,16 @@
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #endif
-
+// 拼接日志的字符串
 void log_formater(const XLoggerInfo* _info, const char* _logbody, PtrBuffer& _log) {
-    static const char* levelStrings[] = {
-        "V",
-        "D",  // debug
-        "I",  // info
-        "W",  // warn
-        "E",  // error
-        "F"  // fatal
-    };
+    // static const char* levelStrings[] = {
+    //     "V",
+    //     "Debug",  // debug
+    //     "Info",  // info
+    //     "Warn",  // warn
+    //     "Error",  // error
+    //     "Fatal"  // fatal
+    // };
 
     assert((unsigned int)_log.Pos() == _log.Length());
 
@@ -69,7 +69,7 @@ void log_formater(const XLoggerInfo* _info, const char* _logbody, PtrBuffer& _lo
     }
 
     if (NULL != _info) {
-        const char* filename = ExtractFileName(_info->filename);
+        // const char* filename = ExtractFileName(_info->filename);
         char strFuncName [128] = {0};
         ExtractFunctionName(_info->func_name, strFuncName, sizeof(strFuncName));
 
@@ -90,13 +90,15 @@ void log_formater(const XLoggerInfo* _info, const char* _logbody, PtrBuffer& _lo
 #endif
         }
 
+        // 删除不必要的头部
+        // int ret = snprintf((char*)_log.PosPtr(), sizeof(levelStrings[_info->level]), "%s:",levelStrings[_info->level]);
         // _log.AllocWrite(30*1024, false);
-        int ret = snprintf((char*)_log.PosPtr(), 1024, "[%s][%s][%" PRIdMAX ", %" PRIdMAX "%s][%s][%s, %s, %d][",  // **CPPLINT SKIP**
-                           _logbody ? levelStrings[_info->level] : levelStrings[kLevelFatal], temp_time,
-                           _info->pid, _info->tid, _info->tid == _info->maintid ? "*" : "", _info->tag ? _info->tag : "",
-                           filename, strFuncName, _info->line);
-
-        assert(0 <= ret);
+//        int ret = snprintf((char*)_log.PosPtr(), 1024, "[%s][%s][%" PRIdMAX ", %" PRIdMAX "%s][%s][%s, %s, %d][",  // **CPPLINT SKIP**
+//                           _logbody ? levelStrings[_info->level] : levelStrings[kLevelFatal], temp_time,
+//                           _info->pid, _info->tid, _info->tid == _info->maintid ? "*" : "", _info->tag ? _info->tag : "",
+//                           filename, strFuncName, _info->line);
+        int ret =0;
+        // assert(0 <= ret);
         _log.Length(_log.Pos() + ret, _log.Length() + ret);
         //      memcpy((char*)_log.PosPtr() + 1, "\0", 1);
 
